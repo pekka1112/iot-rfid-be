@@ -1,6 +1,10 @@
 package com.example.iotrfidbe.controller;
 
 import com.example.iotrfidbe.dto.ResidentDTO;
+import com.example.iotrfidbe.dto.request.BienSoXeRequest;
+import com.example.iotrfidbe.dto.response.BienSoXeResponse;
+import com.example.iotrfidbe.entity.Vehicles;
+import com.example.iotrfidbe.repository.VehicleRepository;
 import com.example.iotrfidbe.service.ResidentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResidentController {
 
     private final ResidentService residentService;
+    private final VehicleRepository vehicleRepository;
 
     /** GET /api/residents - Lay danh sach tat ca cu dan */
     @GetMapping
@@ -65,4 +70,27 @@ public class ResidentController {
         residentService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/plate")
+    public ResponseEntity<?> getPlate(
+            @RequestBody BienSoXeRequest request
+    ) {
+        Integer userId = request.getUserId();
+        Vehicles vehicle = vehicleRepository
+                .findFirstByResidentId(userId)
+                .orElse(null);
+        if (vehicle == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Không tìm thấy biển số");
+        }
+        return ResponseEntity.ok(
+                new BienSoXeResponse(
+                        vehicle.getResident().getResidentId(),
+                        vehicle.getVehicleId(),
+                        vehicle.getLicensePlate()
+                )
+        );
+    }
+
 }
