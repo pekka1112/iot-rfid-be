@@ -45,21 +45,11 @@ DATETIME DEFAULT CURRENT_TIMESTAMP,
 UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON
 DELETE CASCADE
 );
-CREATE TABLE	rfid_users_backups (
- guest_id INT AUTO_INCREMENT PRIMARY KEY,
- card_uid VARCHAR(50) NOT NULL, -- ID thẻ RFID tạm thời phát cho khách
- license_plate
-VARCHAR(20) NOT NULL, -- Biển số xe khách
- check_in_at
-DATETIME DEFAULT CURRENT_TIMESTAMP,
- check_out_at DATETIME NULL, STATUS VARCHAR(20) DEFAULT 'in_building', -- 'in_building' (đang ở trong), 'departed' (đã ra)
- gate_in_id
-INT, -- Lưu ID camera/cổng lúc vào
- gate_out_id
-INT, -- Lưu ID camera/cổng lúc ra
- 
- -- Các chỉ mục để tìm kiếm nhanh khi khách ra
-INDEX idx_guest_card (card_uid), INDEX idx_guest_plate (license_plate)
+
+CREATE TABLE rfid_users_backups (
+    id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    image_path VARCHAR(255)
 );
 CREATE TABLE cameras (
  camera_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,14 +103,19 @@ INSERT INTO cameras (camera_name, location, direction) VALUES
 ('CAM_GATE_01', 'Cổng chính - Lối vào', 'IN'),
 ('CAM_GATE_02', 'Cổng chính - Lối ra', 'OUT');
 
--- 5. Thêm Khách vãn lai
-INSERT INTO rfid_users_backups (card_uid, license_plate, STATUS) VALUES 
-('UID_GUEST_999', '72-C1 555.55', 'in_building');
-
 -- 6. Thêm Nhật ký ra vào
-INSERT INTO access_logs (resident_id, vehicle_id, camera_id, detected_plate, face_match, plate_match, direction) VALUES 
+INSERT INTO access_logs (resident_id, vehicle_id, camera_id, detected_plate, face_match, plate_match, direction) VALUES
 (1, 1, 1, '59-A1 123.45', 1, 1, 'IN');
 
 -- 7. Thêm Cảnh báo cháy
 INSERT INTO fire_alerts (location, sensor_id, alert_level, STATUS) VALUES 
 ('Hầm gửi xe B1', 'SENSOR_SMOKE_05', 'High', 'Resolved'); SHOW TABLES;
+
+-- TEST DATA
+INSERT INTO residents(resident_id, full_name, phone, birth_year)
+VALUES (3, 'Nguyen Do Thanh Phat', '0898209422', 2003),
+		 (4, 'Duc', '0898209422', 2003);
+
+INSERT INTO vehicles(resident_id, license_plate, vehicle_type)
+VALUES (4, '48F122333', 'motorbike'),
+		 (3, '99E122268', 'bike');

@@ -33,6 +33,9 @@ public class Vehicles {
     @JoinColumn(name = "resident_id")
     private Residents resident;
 
+    @Column(name = "resident_id", insertable = false, updatable = false)
+    private Integer residentId;
+
     @Column(name = "license_plate", unique = true, length = 20)
     private String licensePlate;
 

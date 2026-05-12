@@ -1,6 +1,13 @@
 package com.example.iotrfidbe.controller;
 
 import com.example.iotrfidbe.dto.AccessLogDTO;
+import com.example.iotrfidbe.dto.request.AccessLogRequest;
+import com.example.iotrfidbe.entity.AccessLogs;
+import com.example.iotrfidbe.entity.Residents;
+import com.example.iotrfidbe.entity.Vehicles;
+import com.example.iotrfidbe.repository.AccessLogRepository;
+import com.example.iotrfidbe.repository.ResidentRepository;
+import com.example.iotrfidbe.repository.VehicleRepository;
 import com.example.iotrfidbe.service.AccessLogService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccessLogController {
 
     private final AccessLogService accessLogService; // Inject Service - process all logic in service, not controller
+    private final AccessLogRepository accessLogRepository;
+    private final ResidentRepository residentRepository;
+    private final VehicleRepository vehicleRepository;
 
     /**
      * call to service to impl method get all access log from DB
@@ -75,5 +85,34 @@ public class AccessLogController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         accessLogService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/save")
+    public String saveLog(
+            @RequestBody AccessLogRequest request
+    ) {
+
+        Residents resident = residentRepository
+                .findById(request.getResident_id())
+                .orElseThrow(() ->
+                        new RuntimeException("Resident not found"));
+
+        Vehicles vehicle = vehicleRepository
+                .findById(request.getVehicle_id())
+                .orElseThrow(() ->
+                        new RuntimeException("Vehicle not found"));
+
+        AccessLogs log = new AccessLogs();
+
+        // 🔥 SET OBJECT
+        log.setResident(resident);
+        log.setVehicle(vehicle);
+        log.setDetectedPlate(request.getDetected_plate());
+        log.setFaceMatch(request.getFace_match());
+        log.setPlateMatch(request.getPlate_match());
+        log.setDirection(request.getDirection());
+        log.setCreatedAt(LocalDateTime.now());
+        accessLogRepository.save(log);
+        return "OK";
     }
 }

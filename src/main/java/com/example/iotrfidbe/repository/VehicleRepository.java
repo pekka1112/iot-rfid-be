@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface VehicleRepository extends JpaRepository<Vehicles, Integer> {
 
     Optional<Vehicles> findByLicensePlate(String licensePlate);
-
+    Optional<Vehicles> findFirstByResidentId(Integer residentId);
     List<Vehicles> findByResident_ResidentId(Integer residentId);
 }
