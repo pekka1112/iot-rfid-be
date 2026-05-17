@@ -22,12 +22,16 @@ CREATE TABLE vehicles (
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id)
 );
 CREATE TABLE rfid_cards (
- rfid_id INT AUTO_INCREMENT PRIMARY KEY,
- card_uid VARCHAR(50) UNIQUE,
- resident_id INT,
- vehicle_id INT,
- issued_date DATETIME,
- expire_date DATETIME, FOREIGN KEY (resident_id) REFERENCES residents(resident_id), FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
+    rfid_id INT AUTO_INCREMENT PRIMARY KEY,
+    card_uid VARCHAR(50) UNIQUE,
+    plate_number VARCHAR(20),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE face_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    face_id INT NOT NULL,
+    plate_number VARCHAR(20) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE device_backups (
  backup_id INT AUTO_INCREMENT PRIMARY KEY,
