@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RfidCardRepository extends JpaRepository<RFIDCard, Integer> {
+public interface RFIDRepository
+        extends JpaRepository<RFIDCard, Integer> {
 
     Optional<RFIDCard> findByCardUid(String cardUid);
 
     void deleteByCardUid(String cardUid);
+
 }
