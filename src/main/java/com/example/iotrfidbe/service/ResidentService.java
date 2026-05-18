@@ -30,10 +30,14 @@ public class ResidentService {
 
     private Residents toEntity(ResidentDTO dto) {
         Residents r = new Residents();
+
+        r.setResidentId(dto.getResidentId());
+
         r.setFullName(dto.getFullName());
         r.setPhone(dto.getPhone());
         r.setBirthYear(dto.getBirthYear());
         r.setStatus(dto.getStatus() != null ? dto.getStatus() : "active");
+
         return r;
     }
 

@@ -13,7 +13,7 @@ CREATE TABLE users (
 INSERT INTO users (username, email, password_hash, is_active, avt_link ) VALUES 
  ('thankfat', 'thankfat1203@gmail.com', '$2a$10$PibWq4UFMxTTj6YE518mG.LctWuoVWCbb1Y.SvxNqzP.8DOvHKchG' , TRUE , ' ');
 CREATE TABLE residents (
- resident_id INT AUTO_INCREMENT PRIMARY KEY,
+ resident_id INT PRIMARY KEY,
  full_name VARCHAR(100) NOT NULL,
  phone VARCHAR(20),
  birth_year INT,

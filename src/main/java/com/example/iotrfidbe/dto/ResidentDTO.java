@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResidentDTO {
+
     private Integer residentId;
     private String fullName;
     private String phone;
     private Integer birthYear;
     private String status;
     private LocalDateTime createdAt;
+
 }

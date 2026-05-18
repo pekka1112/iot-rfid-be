@@ -22,7 +22,6 @@ import lombok.Setter;
 public class Residents {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "resident_id")
     private Integer residentId;
 
