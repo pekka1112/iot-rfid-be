@@ -108,8 +108,8 @@ INSERT INTO residents (full_name, phone, birth_year, STATUS) VALUES
 
 -- 2. Thêm Phương tiện
 INSERT INTO vehicles (resident_id, license_plate, vehicle_type) VALUES 
-(1, '59-A1 123.45', 'Motorbike'),
-(2, '51-F1 678.90', 'Car');
+(1, '48F122333', 'Motorbike'),
+(2, '51F167890', 'Car');
 
 -- 3. Thêm Dữ liệu dự phòng trên thiết bị (FaceID/Vân tay)
 INSERT INTO device_backups (resident_id, device_user_id, user_name_on_device, credential_type, backup_num, is_admin) VALUES 
@@ -135,5 +135,5 @@ VALUES (3, 'Nguyen Do Thanh Phat', '0898209422', 2003),
 		 (4, 'Duc', '0898209422', 2003);
 
 INSERT INTO vehicles(resident_id, license_plate, vehicle_type)
-VALUES (4, '48F122333', 'motorbike'),
+VALUES (4, 'sdasd', 'motorbike'),
 		 (3, '99E122268', 'bike');
