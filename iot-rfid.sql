@@ -1,11 +1,24 @@
 DROP DATABASE IF EXISTS iot_rfid;
 CREATE DATABASE iot_rfid; USE iot_rfid;
+
+CREATE TABLE users (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(50) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	password_hash VARCHAR(255) NOT NULL,
+	is_active BOOLEAN ,
+	avt_link VARCHAR(255),
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO users (username, email, password_hash, is_active, avt_link ) VALUES 
+ ('thankfat', 'thankfat1203@gmail.com', '$2a$10$PibWq4UFMxTTj6YE518mG.LctWuoVWCbb1Y.SvxNqzP.8DOvHKchG' , TRUE , ' ');
 CREATE TABLE residents (
  resident_id INT AUTO_INCREMENT PRIMARY KEY,
  full_name VARCHAR(100) NOT NULL,
  phone VARCHAR(20),
  birth_year INT,
- created_at DATETIME DEFAULT CURRENT_TIMESTAMP, STATUS VARCHAR(20) DEFAULT 'active'
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+ STATUS VARCHAR(20) DEFAULT 'active'
 );
 CREATE TABLE faces (
  face_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,7 +62,6 @@ DATETIME DEFAULT CURRENT_TIMESTAMP,
 UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON
 DELETE CASCADE
 );
-
 CREATE TABLE rfid_users_backups (
     id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -86,6 +98,8 @@ CREATE INDEX idx_access_time ON access_logs(created_at);
 CREATE INDEX idx_resident ON access_logs(resident_id);
 -- Index để tìm kiếm nhanh theo ID người dùng trên máy
 CREATE INDEX idx_device_user ON device_backups(device_user_id);
+
+
 
 -- 1. Thêm Cư dân mẫu
 INSERT INTO residents (full_name, phone, birth_year, STATUS) VALUES 
