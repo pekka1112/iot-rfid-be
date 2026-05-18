@@ -20,19 +20,13 @@ CREATE TABLE residents (
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
  STATUS VARCHAR(20) DEFAULT 'active'
 );
-CREATE TABLE faces (
- face_id INT AUTO_INCREMENT PRIMARY KEY,
- resident_id INT,
- face_image VARCHAR(255),
- face_embedding TEXT,
- created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id)
-);
+
 CREATE TABLE vehicles (
  vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
  resident_id INT,
  license_plate VARCHAR(20) UNIQUE,
  vehicle_type VARCHAR(20),
- created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id)
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
 );
 CREATE TABLE rfid_cards (
     rfid_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,8 +53,7 @@ INT, -- Quyền Admin trên máy (Có/Không)
  created_at
 DATETIME DEFAULT CURRENT_TIMESTAMP,
  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON
-UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON
-DELETE CASCADE
+UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
 );
 CREATE TABLE rfid_users_backups (
     id INT PRIMARY KEY,
@@ -84,8 +77,8 @@ CREATE TABLE access_logs (
  direction VARCHAR(10),
  image_face VARCHAR(255),
  image_plate VARCHAR(255),
- created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id), FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id), FOREIGN KEY (camera_id) REFERENCES cameras(camera_id)
-);
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ );
 CREATE TABLE fire_alerts (
  alert_id INT AUTO_INCREMENT PRIMARY KEY,
  location VARCHAR(100),
@@ -96,20 +89,21 @@ CREATE TABLE fire_alerts (
 CREATE INDEX idx_plate ON vehicles(license_plate);
 CREATE INDEX idx_access_time ON access_logs(created_at);
 CREATE INDEX idx_resident ON access_logs(resident_id);
+
 -- Index để tìm kiếm nhanh theo ID người dùng trên máy
 CREATE INDEX idx_device_user ON device_backups(device_user_id);
 
 
 
 -- 1. Thêm Cư dân mẫu
-INSERT INTO residents (full_name, phone, birth_year, STATUS) VALUES 
-('Nguyễn Văn A', '0901234567', 1990, 'active'),
-('Trần Thị B', '0987654321', 1995, 'active');
+INSERT INTO residents (resident_id, full_name, phone, birth_year, STATUS) VALUES 
+(1, 'Nguyễn Văn A', '0901234567', 1990, 'active'),
+(2, 'Trần Thị B', '0987654321', 1995, 'active');
 
 -- 2. Thêm Phương tiện
 INSERT INTO vehicles (resident_id, license_plate, vehicle_type) VALUES 
-(1, '48F122333', 'Motorbike'),
-(2, '51F167890', 'Car');
+(1, '59-A1 123.45', 'Motorbike'),
+(2, '51-F1 678.90', 'Car');
 
 -- 3. Thêm Dữ liệu dự phòng trên thiết bị (FaceID/Vân tay)
 INSERT INTO device_backups (resident_id, device_user_id, user_name_on_device, credential_type, backup_num, is_admin) VALUES 
@@ -135,5 +129,5 @@ VALUES (3, 'Nguyen Do Thanh Phat', '0898209422', 2003),
 		 (4, 'Duc', '0898209422', 2003);
 
 INSERT INTO vehicles(resident_id, license_plate, vehicle_type)
-VALUES (4, 'sdasd', 'motorbike'),
+VALUES (4, '48F122333', 'motorbike'),
 		 (3, '99E122268', 'bike');
