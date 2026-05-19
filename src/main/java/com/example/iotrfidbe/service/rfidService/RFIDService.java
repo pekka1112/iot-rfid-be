@@ -1,7 +1,7 @@
 package com.example.iotrfidbe.service.rfidService;
 
 import com.example.iotrfidbe.dto.response.RFIDResponse;
-import com.example.iotrfidbe.entity.RFIDCard;
+import com.example.iotrfidbe.entity.RfidCard;
 import com.example.iotrfidbe.repository.RFIDRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class RFIDService {
             String detectedPlate
     ) {
 
-        Optional<RFIDCard> optional =
+        Optional<RfidCard> optional =
                 rfidRepository.findByCardUid(uid);
 
         // =========================
@@ -28,7 +28,7 @@ public class RFIDService {
         // =========================
         if(optional.isEmpty()) {
 
-            RFIDCard card = new RFIDCard();
+            RfidCard card = new RfidCard();
 
             card.setCardUid(uid);
             card.setPlateNumber(detectedPlate);
@@ -47,7 +47,7 @@ public class RFIDService {
         // =========================
         // XE RA
         // =========================
-        RFIDCard card = optional.get();
+        RfidCard card = optional.get();
 
         String dbPlate = card.getPlateNumber();
 
