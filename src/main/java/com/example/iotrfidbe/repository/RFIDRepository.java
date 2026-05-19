@@ -1,14 +1,14 @@
 package com.example.iotrfidbe.repository;
 
-import com.example.iotrfidbe.entity.RFIDCard;
+import com.example.iotrfidbe.entity.RfidCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface RFIDRepository
-        extends JpaRepository<RFIDCard, Integer> {
+        extends JpaRepository<RfidCard, Integer> {
 
-    Optional<RFIDCard> findByCardUid(String cardUid);
+    Optional<RfidCard> findByCardUid(String cardUid);
 
     void deleteByCardUid(String cardUid);
 
