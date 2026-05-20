@@ -12,6 +12,7 @@ CREATE TABLE users (
 );
 INSERT INTO users (username, email, password_hash, is_active, avt_link ) VALUES 
  ('thankfat', 'thankfat1203@gmail.com', '$2a$10$PibWq4UFMxTTj6YE518mG.LctWuoVWCbb1Y.SvxNqzP.8DOvHKchG' , TRUE , ' ');
+ 
 CREATE TABLE residents (
  resident_id INT PRIMARY KEY,
  full_name VARCHAR(100) NOT NULL,
@@ -28,12 +29,14 @@ CREATE TABLE vehicles (
  vehicle_type VARCHAR(20),
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
 );
+
 CREATE TABLE rfid_cards (
     rfid_id INT AUTO_INCREMENT PRIMARY KEY,
     card_uid VARCHAR(50) UNIQUE,
     plate_number VARCHAR(20),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE TABLE face_log (
     id INT AUTO_INCREMENT PRIMARY KEY,
     face_id INT NOT NULL,
@@ -92,8 +95,6 @@ CREATE INDEX idx_resident ON access_logs(resident_id);
 
 -- Index để tìm kiếm nhanh theo ID người dùng trên máy
 CREATE INDEX idx_device_user ON device_backups(device_user_id);
-
-
 
 -- 1. Thêm Cư dân mẫu
 INSERT INTO residents (resident_id, full_name, phone, birth_year, STATUS) VALUES 
