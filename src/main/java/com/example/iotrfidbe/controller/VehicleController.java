@@ -1,23 +1,19 @@
 package com.example.iotrfidbe.controller;
 
 import com.example.iotrfidbe.dto.VehicleDTO;
+import com.example.iotrfidbe.dto.VehiclesDTO;
 import com.example.iotrfidbe.entity.Residents;
 import com.example.iotrfidbe.entity.Vehicles;
 import com.example.iotrfidbe.repository.ResidentRepository;
 import com.example.iotrfidbe.repository.VehicleRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.iotrfidbe.service.VehiclesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -26,6 +22,7 @@ public class VehicleController {
 
     private final VehicleRepository vehicleRepository;
     private final ResidentRepository residentRepository;
+    private final VehiclesService vehiclesService;
 
     private VehicleDTO toDTO(Vehicles v) {
         return VehicleDTO.builder()
@@ -38,14 +35,28 @@ public class VehicleController {
                 .build();
     }
 
-    /** GET /api/vehicles - Lay danh sach tat ca xe */
+    /** GET /api/vehicles - Lấy danh sách tất cả xe */
     @GetMapping
-    public ResponseEntity<List<VehicleDTO>> getAll() {
-        return ResponseEntity.ok(vehicleRepository.findAll()
-                .stream().map(this::toDTO).collect(Collectors.toList()));
+    public ResponseEntity<List<VehiclesDTO>> getAll() {
+        return ResponseEntity.ok(vehiclesService.getAllVehicles());
     }
 
-    /** GET /api/vehicles/{id} */
+    /** POST /api/vehicles - Thêm một xe mới
+     *  Body: { "plateNumber": "59-A1 123.45", "vehicleType": "Motorbike", "residentId": 1 }
+     */
+    @PostMapping
+    public ResponseEntity<VehiclesDTO> create(@RequestBody VehiclesDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(vehiclesService.createVehicle(request));
+    }
+
+    /** DELETE /api/vehicles/{id} - Xóa xe theo ID */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        vehiclesService.deleteVehicle(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** GET /api/vehicles/{id} - Lấy chi tiết một xe theo ID */
     @GetMapping("/{id}")
     public ResponseEntity<VehicleDTO> getById(@PathVariable Integer id) {
         Vehicles v = vehicleRepository.findById(id)
@@ -53,28 +64,14 @@ public class VehicleController {
         return ResponseEntity.ok(toDTO(v));
     }
 
-    /** GET /api/vehicles/resident/{residentId} - Lay xe cua cu dan */
+    /** GET /api/vehicles/resident/{residentId} - Lấy danh sách xe của một cư dân */
     @GetMapping("/resident/{residentId}")
     public ResponseEntity<List<VehicleDTO>> getByResident(@PathVariable Integer residentId) {
         return ResponseEntity.ok(vehicleRepository.findByResident_ResidentId(residentId)
                 .stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    /** POST /api/vehicles - Them xe moi */
-    @PostMapping
-    public ResponseEntity<VehicleDTO> create(@RequestBody VehicleDTO dto) {
-        Vehicles v = new Vehicles();
-        v.setLicensePlate(dto.getLicensePlate());
-        v.setVehicleType(dto.getVehicleType());
-        if (dto.getResidentId() != null) {
-            Residents resident = residentRepository.findById(dto.getResidentId())
-                    .orElseThrow(() -> new RuntimeException("Resident not found: " + dto.getResidentId()));
-            v.setResident(resident);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(vehicleRepository.save(v)));
-    }
-
-    /** PUT /api/vehicles/{id} - Cap nhat xe */
+    /** PUT /api/vehicles/{id} - Cập nhật thông tin xe */
     @PutMapping("/{id}")
     public ResponseEntity<VehicleDTO> update(@PathVariable Integer id, @RequestBody VehicleDTO dto) {
         Vehicles v = vehicleRepository.findById(id)
@@ -87,12 +84,5 @@ public class VehicleController {
             v.setResident(resident);
         }
         return ResponseEntity.ok(toDTO(vehicleRepository.save(v)));
-    }
-
-    /** DELETE /api/vehicles/{id} */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        vehicleRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

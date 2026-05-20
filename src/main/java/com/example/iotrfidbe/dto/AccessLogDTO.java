@@ -25,4 +25,5 @@ public class AccessLogDTO {
     private String imageFace;
     private String imagePlate;
     private LocalDateTime createdAt;
+    private Boolean isCorrectFaceAndPlate;
 }
