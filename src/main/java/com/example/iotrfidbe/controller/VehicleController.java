@@ -71,6 +71,26 @@ public class VehicleController {
                 .stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
+    /**
+     * PUT /api/vehicles/plate/{licensePlate} - Cập nhật xe theo biển số
+     * Body: { "plateNumber": "59-B2 999.99", "vehicleType": "Car", "residentId": 2 }
+     */
+    @PutMapping("/plate/{licensePlate}")
+    public ResponseEntity<VehiclesDTO> updateByPlate(
+            @PathVariable String licensePlate,
+            @RequestBody VehiclesDTO request) {
+        return ResponseEntity.ok(vehiclesService.updateVehicleByPlate(licensePlate, request));
+    }
+
+    /**
+     * DELETE /api/vehicles/plate/{licensePlate} - Xóa xe theo biển số
+     */
+    @DeleteMapping("/plate/{licensePlate}")
+    public ResponseEntity<Void> deleteByPlate(@PathVariable String licensePlate) {
+        vehiclesService.deleteVehicleByPlate(licensePlate);
+        return ResponseEntity.noContent().build();
+    }
+
     /** PUT /api/vehicles/{id} - Cập nhật thông tin xe */
     @PutMapping("/{id}")
     public ResponseEntity<VehicleDTO> update(@PathVariable Integer id, @RequestBody VehicleDTO dto) {

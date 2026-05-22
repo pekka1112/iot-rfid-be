@@ -34,6 +34,38 @@ public class VehiclesService {
 
     // ==================== APIs ====================
 
+    /** Cập nhật xe theo biển số */
+    @Transactional
+    public VehiclesDTO updateVehicleByPlate(String licensePlate, VehiclesDTO request) {
+        Vehicles vehicle = vehicleRepository.findByLicensePlate(licensePlate)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe với biển số: " + licensePlate));
+        // Cập nhật biển số mới nếu có và khác biển số cũ
+        if (request.getPlateNumber() != null && !request.getPlateNumber().equals(licensePlate)) {
+            vehicleRepository.findByLicensePlate(request.getPlateNumber())
+                    .ifPresent(v -> {
+                        throw new RuntimeException("Biển số xe đã tồn tại: " + request.getPlateNumber());
+                    });
+            vehicle.setLicensePlate(request.getPlateNumber());
+        }
+        if (request.getVehicleType() != null) {
+            vehicle.setVehicleType(request.getVehicleType());
+        }
+        if (request.getResidentId() != null) {
+            Residents resident = residentRepository.findById(request.getResidentId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy cư dân với ID: " + request.getResidentId()));
+            vehicle.setResident(resident);
+        }
+        return toDTO(vehicleRepository.save(vehicle));
+    }
+
+    /** Xóa xe theo biển số */
+    @Transactional
+    public void deleteVehicleByPlate(String licensePlate) {
+        Vehicles vehicle = vehicleRepository.findByLicensePlate(licensePlate)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe với biển số: " + licensePlate));
+        vehicleRepository.delete(vehicle);
+    }
+
     /** Lấy tất cả xe */
     @Transactional(readOnly = true)
     public List<VehiclesDTO> getAllVehicles() {
