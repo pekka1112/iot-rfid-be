@@ -87,32 +87,131 @@ public class AccessLogController {
         return ResponseEntity.noContent().build();
     }
 
+//    @PostMapping("/save")
+//    public String saveLog(
+//            @RequestBody AccessLogRequest request
+//    ) {
+//
+//        Residents resident = residentRepository
+//                .findById(request.getResident_id())
+//                .orElseThrow(() ->
+//                        new RuntimeException("Resident not found"));
+//
+//        Vehicles vehicle = vehicleRepository
+//                .findById(request.getVehicle_id())
+//                .orElseThrow(() ->
+//                        new RuntimeException("Vehicle not found"));
+//
+//        AccessLogs log = new AccessLogs();
+//
+//        // 🔥 SET OBJECT
+//        log.setResident(resident);
+//        log.setVehicle(vehicle);
+//        log.setDetectedPlate(request.getDetected_plate());
+//        log.setFaceMatch(request.getFace_match());
+//        log.setPlateMatch(request.getPlate_match());
+//        log.setDirection(request.getDirection());
+//        log.setCreatedAt(LocalDateTime.now());
+//        accessLogRepository.save(log);
+//        return "OK";
+//    }
+
+
     @PostMapping("/save")
-    public String saveLog(
+    public ResponseEntity<AccessLogDTO> saveLog(
             @RequestBody AccessLogRequest request
     ) {
 
-        Residents resident = residentRepository
-                .findById(request.getResident_id())
-                .orElseThrow(() ->
-                        new RuntimeException("Resident not found"));
-
-        Vehicles vehicle = vehicleRepository
-                .findById(request.getVehicle_id())
-                .orElseThrow(() ->
-                        new RuntimeException("Vehicle not found"));
-
         AccessLogs log = new AccessLogs();
 
-        // 🔥 SET OBJECT
-        log.setResident(resident);
-        log.setVehicle(vehicle);
+        // =================================================
+        // RESIDENT
+        // =================================================
+        Residents resident = null;
+
+        if (request.getResident_id() != null) {
+
+            resident = residentRepository
+                    .findById(request.getResident_id())
+                    .orElse(null);
+
+            log.setResident(resident);
+        }
+
+        // =================================================
+        // VEHICLE
+        // =================================================
+        Vehicles vehicle = null;
+
+        if (request.getVehicle_id() != null) {
+
+            vehicle = vehicleRepository
+                    .findById(request.getVehicle_id())
+                    .orElse(null);
+
+            log.setVehicle(vehicle);
+        }
+
+        // =================================================
+        // BASIC
+        // =================================================
         log.setDetectedPlate(request.getDetected_plate());
+
         log.setFaceMatch(request.getFace_match());
+
         log.setPlateMatch(request.getPlate_match());
+
         log.setDirection(request.getDirection());
+
         log.setCreatedAt(LocalDateTime.now());
-        accessLogRepository.save(log);
-        return "OK";
+
+        // =================================================
+        // SAVE
+        // =================================================
+        AccessLogs saved = accessLogRepository.save(log);
+
+        // =================================================
+        // RETURN DTO
+        // =================================================
+        AccessLogDTO dto = new AccessLogDTO();
+
+        dto.setLogId(saved.getLogId());
+
+        dto.setResidentId(
+                resident != null ? resident.getResidentId() : null
+        );
+
+        dto.setResidentName(
+                request.getResident_name()
+        );
+
+        dto.setVehicleId(
+                vehicle != null ? vehicle.getVehicleId() : null
+        );
+
+        dto.setDetectedPlate(saved.getDetectedPlate());
+
+        dto.setFaceMatch(saved.getFaceMatch());
+
+        dto.setPlateMatch(saved.getPlateMatch());
+
+        dto.setDirection(saved.getDirection());
+
+        dto.setCreatedAt(saved.getCreatedAt());
+
+        // ===== NEW =====
+        dto.setEnrollid(request.getEnrollid());
+
+        dto.setDbPlates(request.getDb_plates());
+
+        dto.setFailReason(request.getFail_reason());
+
+        dto.setIsCorrectFaceAndPlate(
+                request.getIsCorrectFaceAndPlate()
+        );
+
+        dto.setTimestamp(request.getTimestamp());
+
+        return ResponseEntity.ok(dto);
     }
 }
