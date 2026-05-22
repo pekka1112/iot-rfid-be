@@ -27,8 +27,8 @@ public class VehicleController {
     private VehicleDTO toDTO(Vehicles v) {
         return VehicleDTO.builder()
                 .vehicleId(v.getVehicleId())
-                .residentId(v.getResident() != null ? v.getResident().getResidentId() : null)
-                .residentName(v.getResident() != null ? v.getResident().getFullName() : null)
+                .residentId(v.getResidentId())
+                .residentName(null)
                 .licensePlate(v.getLicensePlate())
                 .vehicleType(v.getVehicleType())
                 .createdAt(v.getCreatedAt())
