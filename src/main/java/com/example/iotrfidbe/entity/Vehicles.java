@@ -1,5 +1,6 @@
 package com.example.iotrfidbe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,6 +30,7 @@ public class Vehicles {
     @Column(name = "vehicle_id")
     private Integer vehicleId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resident_id")
     private Residents resident;
