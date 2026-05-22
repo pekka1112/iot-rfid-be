@@ -1,6 +1,8 @@
 package com.example.iotrfidbe.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,4 +28,9 @@ public class AccessLogDTO {
     private String imagePlate;
     private LocalDateTime createdAt;
     private Boolean isCorrectFaceAndPlate;
+
+    private Integer enrollid;
+    private List<String> dbPlates;
+    private String failReason;
+    private String timestamp;
 }
